@@ -1,12 +1,15 @@
+import ModelsGrid from "@/app/components/ModelGrid";
 import { CategoryPageProps } from "@/app/index";
-import { getCategoryBySlug } from "@/app/lib/categories";
+import { getAllModels } from "@/app/lib/model";
 
 const CategoryPage = async ({ params }: CategoryPageProps) => {
   const { categoryName } = await params;
 
-  const categoryObj = getCategoryBySlug(categoryName);
+  const modelsFilteredByCategoryList = await getAllModels(categoryName);
 
-  return <h1>{categoryObj.displayName}</h1>;
+  return (
+    <ModelsGrid title="CategoryModels" models={modelsFilteredByCategoryList} />
+  );
 };
 
 export default CategoryPage;

@@ -1,22 +1,34 @@
 import { getAllModels } from "../lib/model";
-import ModelCard from "@/app/components/ModelCard";
-import { Model } from "@/app/types/model";
+import ModelsGrid from "../components/ModelGrid";
+import Form from "next/form";
 
-const ThreeDModels = async () => {
+const ThreeDModels = async ({
+  searchParams,
+}: {
+  searchParams: { query: string };
+}) => {
+  const { query } = searchParams;
+  console.log("SearchQuery---->", query);
   const threeDModeldata = await getAllModels();
+  const filteredThreeDModels = query
+    ? threeDModeldata.filter((threeDModel) =>
+        threeDModel.name.toLowerCase().includes(query.toLowerCase())
+      )
+    : threeDModeldata;
   return (
-    <div className="container px-4 py-8 mx-auto">
-      <h1 className="mb-8 text-3xl font-bold">All Models</h1>
-      <div
-        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        role="region"
-        aria-label="3D Models Gallery"
-      >
-        {threeDModeldata.map((model: Model) => (
-          <ModelCard key={model.id} model={model} />
-        ))}
-      </div>
-    </div>
+    <>
+      <Form action="/3d-models" className="w-full px-5 md:px-0 md:max-w-xl">
+        <input
+          type="text"
+          name="query"
+          placeholder="E.g. dragon"
+          autoComplete="off"
+          defaultValue={query}
+          className="w-full py-3 pl-5 pr-5 text-sm placeholder-gray-500 bg-white border border-[#606060] rounded-full focus:border-[#606060] focus:outline-none focus:ring-0 md:text-base"
+        />
+      </Form>
+      <ModelsGrid title="3D Models" models={filteredThreeDModels} />
+    </>
   );
 };
 
